@@ -2,32 +2,64 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+
+.test {
+    border: 1px solid red !important;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+.custom-black {
+    color: #1C2638;
+}
+.custom-text{
+    color: #005FAC;
+
+}
+.bg-custom {
+    background-color: #005FAC;
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+.nav-text {
+    color: #005FAC;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+.lightblue-hover:hover {
+    color: #73abd8;
+}
+
+.header-border {
+    border-bottom: 1px solid #CCCCCC;
+}
+
+.login-button {
+    background-color: #005FAC;
+    color: white;
+    outline: 1px solid transparent;
+}
+
+.login-button:hover {
+    background-color: white;
+    outline: 1px solid #005FAC;
+    color: #005FAC
+}
+
+.login-button:hover>svg path {
+    fill: #005FAC;
+}
+
+.blue-sub {
+    text-decoration: underline;
+    text-decoration-color: #005FAC;
+
+}
+
+
+@media (max-width: 767px) {
+    .nav-text {
+        color: white;
+    }
+
+    .headbar-bg {
+        background-color: #005FAC;
+    }
+
 }
