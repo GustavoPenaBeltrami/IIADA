@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.test {
+    border: 1px solid red !important;
+}
+
+.custom-black {
+    color: #1C2638;
+}
+.custom-text{
+    color: #005FAC;
+
+}
+.bg-custom {
+    background-color: #005FAC;
+}
+
+.nav-text {
+    color: #005FAC;
+}
+
+.lightblue-hover:hover {
+    color: #73abd8;
+}
+
+.header-border {
+    border-bottom: 1px solid #CCCCCC;
+}
+
+.special-button {
+    background-color: #005FAC;
+    color: white;
+    outline: 1px solid transparent;
+}
+.special-button:hover {
+    background-color: white;
+    outline: 1px solid #005FAC;
+    color: #005FAC
+}
+.special-button:hover>svg path {
+    fill: #005FAC;
+}
+
+.login-button{
+    background-color: #005FAC;
+    color: white;
+    outline: 1px solid transparent;
+}
+
+.login-button:hover {
+    background-color: white;
+    outline: 1px solid #005FAC;
+    color: #005FAC
+}
+
+
+.blue-sub {
+    text-decoration: underline;
+    text-decoration-color: #005FAC;
+
+}
+
+
+@media (max-width: 767px) {
+    .nav-text {
+        color: white;
+    }
+    .headbar-bg {
+        background-color: #005FAC;
+    }
+
+    .login-button{
+        background-color: white;
+        outline: 1px solid #005FAC;
+        color: #005FAC
+    }
+
+    .login-button svg path{
+        fill: #005FAC !important;
+    }
+    
+    .login-button:hover {
+        background-color: #005FAC;
+        color: white;
+        outline: 1px solid transparent;
+
+    }
+
+    .login-button:hover svg path{
+        fill: white !important;
+    }
+
+}
