@@ -41,7 +41,7 @@ export const CoursePublicInfo = () => {
   }, [courseId]);
 
   useEffect(() => {
-    if (session) {
+    if (session && data) {
       const cachedEnrolledCourses = sessionStorage.getItem("enrolled-courses");
       if (!cachedEnrolledCourses) {
         fetch(`/api/courses?email=${session.user.email}`)
@@ -64,7 +64,7 @@ export const CoursePublicInfo = () => {
         setEnrolled(isEnrolled);
       }
     }
-  }, [session]);
+  }, [session, data]);
 
   const handlePay = (course) => {
     if (!session) {

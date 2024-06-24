@@ -37,6 +37,7 @@ export async function GET(request) {
         const coursesWithProgress = user.enrollments.map(enrollment => {
             return {
                 enrollmentId: enrollment.id,
+                date: enrollment.createdAt,
                 course: enrollment.course,
                 userSectionProgress: enrollment.UserSectionProgress
             };
