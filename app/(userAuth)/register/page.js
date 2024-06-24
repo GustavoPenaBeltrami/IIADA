@@ -50,7 +50,16 @@ export default function RegisterPage() {
       <h1 className="text-4xl font-bold text-center pt-20 pb-5">Register</h1>
 
       <form className="flex flex-col md:w-1/3 w-11/12 mx-auto" onSubmit={onSubmit}>
-        <label className="text-md font-semibold">E-mail</label>
+
+      <label className="text-md font-semibold">Name</label>
+        <input className="border border-gray-400 p-2 rounded-lg outline-none" type="text" {...(register("name", { required: true }))} />
+        {errors.name && <p className="text-slate-400 italic text-sm mt-1 ml-2">Name required</p>}
+
+        <label className="text-md font-semibold mt-3">Last name</label>
+        <input className="border border-gray-400 p-2 rounded-lg outline-none" type="text" {...(register("lastName", { required: true }))} />
+        {errors.lastName && <p className="text-slate-400 italic text-sm mt-1 ml-2">Last name required</p>}
+
+        <label className="text-md font-semibold mt-3">E-mail</label>
         <input className="border border-gray-400 p-2 rounded-lg outline-none" type="email" {...(register("email", { required: true }))} />
         {errors.email && <p className="text-slate-400 italic text-sm mt-1 ml-2">Email required</p>}
 

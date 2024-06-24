@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Video from "./Video";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export const Section = () => {
   const { courseId, sectionId } = useParams();
@@ -15,6 +16,8 @@ export const Section = () => {
   const [nextSection, setNextSection] = useState(null);
   const [previousSection, setPreviousSection] = useState(null);
   const [isLoading, setLoading] = useState(true);
+
+  const router = useRouter();
 
   useEffect(() => {
     const userRAW = sessionStorage.getItem("session");
@@ -38,16 +41,20 @@ export const Section = () => {
         sessionStorage.getItem("enrolled-courses")
       );
 
-      if (!enrolledCourses) {
+      if (!enrolledCourses || enrolledCourses.length === 0) {
         fetch(`/api/courses?email=${session.user.email}`)
           .then((res) => res.json())
           .then((data) => {
+            const thisCourse = data.courses.find(
+              (course) => course.course.id === courseId
+            );
+            if (!thisCourse) {
+              router.push("/courses");
+              return
+            }
             sessionStorage.setItem(
               "enrolled-courses",
               JSON.stringify(data.courses)
-            );
-            const thisCourse = data.courses.find(
-              (course) => course.course.id === courseId
             );
             setData(thisCourse);
             setCourse(thisCourse.course);

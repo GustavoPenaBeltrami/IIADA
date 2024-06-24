@@ -1,7 +1,6 @@
 
 import { NextResponse } from "next/server"
 import prisma from "@/lib/db"
-
 export async function GET(request) {
 
     const searchParams = request.nextUrl.searchParams;
@@ -15,7 +14,9 @@ export async function GET(request) {
                     sections: {
                         select: {
                             title: true,
-                            description: true
+                            description: true,
+                            number: true,
+                            duration: true,
                         }
                     }
                 }

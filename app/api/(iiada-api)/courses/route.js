@@ -16,6 +16,7 @@ export async function GET(request) {
                     },
                     include: {
                         course: true, // Incluir detalles del curso
+                        grades: true, // Incluir calificación del usuario
                         UserSectionProgress: { // Incluir progreso de sección del usuario
                             include: {
                                 section: true // Incluir datos de la sección asociada
@@ -26,13 +27,16 @@ export async function GET(request) {
             }
         });
 
+        
         if (!user) {
             return NextResponse.json({ message: 'User not found', status: 404 });
         }
-
+        
+        console.log(user);
         // 2. Obtener todos los cursos del usuario con sus respectivos progresos de sección
         const coursesWithProgress = user.enrollments.map(enrollment => {
             return {
+                enrollmentId: enrollment.id,
                 course: enrollment.course,
                 userSectionProgress: enrollment.UserSectionProgress
             };

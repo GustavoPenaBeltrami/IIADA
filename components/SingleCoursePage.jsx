@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export const SingleCoursePage = () => {
   const { courseId } = useParams();
@@ -9,6 +10,8 @@ export const SingleCoursePage = () => {
   const [course, setCourse] = useState(null);
   const [progress, setProgress] = useState([]);
   const [isLoading, setLoading] = useState(true);
+
+  const router = useRouter();
 
   useEffect(() => {
     const userRAW = sessionStorage.getItem("session");
@@ -32,10 +35,14 @@ export const SingleCoursePage = () => {
         sessionStorage.getItem("enrolled-courses")
       );
 
-      if (!enrolledCourses) {
+      if (!enrolledCourses || enrolledCourses.length === 0) {
         fetch(`/api/courses?email=${session.user.email}`)
           .then((res) => res.json())
           .then((data) => {
+            if (data.courses.length === 0) {
+              router.push("/courses");
+              return;
+            }
             sessionStorage.setItem(
               "enrolled-courses",
               JSON.stringify(data.courses)
@@ -43,6 +50,10 @@ export const SingleCoursePage = () => {
             const thisCourse = data.courses.find(
               (course) => course.course.id === courseId
             );
+            if (!thisCourse) {
+              router.push("/courses");
+              return;
+            }
             setCourse(thisCourse.course);
             setProgress(thisCourse.userSectionProgress);
             setLoading(false);
@@ -68,7 +79,7 @@ export const SingleCoursePage = () => {
       });
     }
     // Convertir la duración total de segundos a minutos
-    const totalDurationMinutes = Math.floor(totalDurationSeconds / 60);
+    const totalDurationMinutes = Math.round(totalDurationSeconds / 60);
     return totalDurationMinutes;
   };
 
@@ -154,12 +165,22 @@ export const SingleCoursePage = () => {
               })}
             <h2 className="mt-2 text-[24px] custom-black">Exam</h2>
             <p>
-              This course has an exam at the end, you can start it when you finish all the sections. Are you ready?
+              This course has an exam at the end, you can start it when you
+              finish all the sections. Are you ready?
             </p>
 
-            <Link href={`/courses/${courseId}/exam`} className="special-button duration-300 transition-all p-3 rounded-md text-white mt-4 w-fit">
-              Start the exam!
-            </Link>
+            {progress.filter((section) => !section.finished).length > 0 ? (
+              <p className="text-red-700">
+                You need to finish all the sections to start the exam
+              </p>
+            ) : (
+              <Link
+                href={`/courses/${courseId}/exam`}
+                className="special-button duration-300 transition-all p-3 rounded-md text-white mt-4 w-fit"
+              >
+                Start the exam!
+              </Link>
+            )}
           </div>
         </>
       )}

@@ -107,7 +107,7 @@ model UserSectionProgress {
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 
-  @@unique([sectionId]) // Cada usuario solo puede tener un registro de progreso por sección
+  @@unique([sectionId, enrollmentId]) // Cada usuario solo puede tener un registro de progreso por sección
 }
 
 model Grade {

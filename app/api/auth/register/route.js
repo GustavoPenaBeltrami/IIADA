@@ -7,23 +7,30 @@ export async function POST(request) {
     try {
         const data = await request.json();
 
-        const usearExist = await prisma.user.findUnique({
+        const userExist = await prisma.user.findUnique({
             where: {
-                email: data.email
+                email: data.email.toLowerCase()
             }
         })
 
-        if (usearExist) {
+        if (userExist) {
             return NextResponse.json({ message: 'User already exist' }, { status: 400 });
         }
 
         const hashPassword = await bcrypt.hash(data.password, 10);
+
+        function capitalizeWords(str) {
+            return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        }
+
+        const fixedName = capitalizeWords(data.name);
+        const fidexLastnames = capitalizeWords(data.lastName);
         const user = await prisma.user.create({
             data: {
-                email: data.email,
+                email: data.email.toLowerCase(),
                 password: hashPassword,
-                name: "",
-                lastName: ""
+                name: fixedName,
+                lastName: fidexLastnames
             }
         })
         return NextResponse.json({ ok:true ,message: 'User created'}, { status: 201 });

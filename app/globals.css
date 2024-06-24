@@ -6,6 +6,10 @@
     border: 1px solid red !important;
 }
 
+.times-new-roman {
+    font-family: 'Times New Roman', Times, serif !important;
+}
+
 .custom-black {
     color: #1C2638;
 }

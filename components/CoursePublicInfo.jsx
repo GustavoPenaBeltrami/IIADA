@@ -1,12 +1,27 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 export const CoursePublicInfo = () => {
   const { courseId } = useParams();
   const [data, setData] = useState(null);
   const [isLoading, setLoading] = useState(true);
+  const [session, setSession] = useState(null);
+  const [enrolled, setEnrolled] = useState(false);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!session) {
+      fetch("/api/auth/")
+        .then((res) => res.json())
+        .then((data) => {
+          setSession(data.session);
+        });
+    }
+  }, []);
 
   useEffect(() => {
     const cacheKey = `catalog-${courseId}`;
@@ -25,16 +40,58 @@ export const CoursePublicInfo = () => {
     }
   }, [courseId]);
 
-  const [session, setSession] = useState(null);
   useEffect(() => {
+    if (session) {
+      const cachedEnrolledCourses = sessionStorage.getItem("enrolled-courses");
+      if (!cachedEnrolledCourses) {
+        fetch(`/api/courses?email=${session.user.email}`)
+          .then((res) => res.json())
+          .then((info) => {
+            sessionStorage.setItem(
+              "enrolled-courses",
+              JSON.stringify(info.courses)
+            );
+            const isEnrolled = info.courses.some(
+              (course) => course.course.id === data.id
+            );
+            setEnrolled(isEnrolled);
+          });
+      } else {
+        const enrolledCourses = JSON.parse(cachedEnrolledCourses);
+        const isEnrolled = enrolledCourses.some(
+          (course) => course.course.id === data.id
+        );
+        setEnrolled(isEnrolled);
+      }
+    }
+  }, [session]);
+
+  const handlePay = (course) => {
     if (!session) {
-      fetch("/api/auth/")
+      router.push("/login");
+    } else {
+      fetch("/api/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          course: { id: course.id, title: course.title, price: course.price },
+          userId: session.user.id,
+        }),
+      })
         .then((res) => res.json())
         .then((data) => {
-          setSession(data.session);
+          if (!data.ok){
+            toast.error(data.error);
+          }
+          if (data.url) {
+            sessionStorage.removeItem("enrolled-courses");
+            router.push(data.url);
+          }
         });
     }
-  }, []);
+};
 
   return (
     <>
@@ -49,13 +106,21 @@ export const CoursePublicInfo = () => {
               src={data.imageUrl}
               className="w-[300px] mx-auto rounded-xl"
             ></img>
-            <Link
-              href={`${session ? "/" : "/login"}`}
+            {enrolled && (
+              <Link
+                href={`/courses/${data.id}`}
+                className=" special-button w-fit p-4 mx-auto mt-10 rounded-xl font-semibold text-lg transition-all duration-300"
+              >
+                Go to course
+              </Link>
+            )}
+            {!enrolled && <button
+              onClick={() => handlePay(data)}
               className=" special-button w-fit p-4 mx-auto mt-10 rounded-xl font-semibold text-lg transition-all duration-300"
-              disabled={!session}
             >
               Get this course (${data.price})
-            </Link>
+            </button>}
+
           </div>
           <div className="w-8/12  flex flex-col">
             <h3 className="text-md text-gray-500 pl-4">
@@ -139,7 +204,6 @@ export const CoursePublicInfo = () => {
                 Lorem ipsum 2
               </li>
             </div>
-
           </div>
         </div>
       )}
